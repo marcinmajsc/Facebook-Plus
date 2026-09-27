@@ -33,7 +33,7 @@ jobs:
     name: Build tweak (.deb)
     # macOS so Theos uses Xcode's toolchain and iOS SDK directly — far more
     # reliable than a Linux cross-compiler + downloaded SDK.
-    runs-on: macos-latest
+    runs-on: xcode-27
     env:
       THEOS: ${{ github.workspace }}/theos
     steps:
