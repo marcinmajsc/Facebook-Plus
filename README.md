@@ -28,11 +28,11 @@
   <tbody>
     <tr>
       <td nowrap>📰 <b>Feed</b></td>
-      <td>Remove Ads & Sponsored Posts<br>Hide "People you may know", Group & Page suggestions<br>Remove Reels carousel & Threads promo<br><b>Confirm before liking</b> (prevents accidental likes)</td>
+      <td>Remove Ads & Sponsored Posts<br>Hide "People you may know", Group & Page suggestions<br>Remove Reels carousel, Threads promo & <b>Stories</b> (tray + single cards)<br><b>Confirm before liking</b> (prevents accidental likes)</td>
     </tr>
     <tr>
       <td nowrap>🎬 <b>Reels</b></td>
-      <td><b>Confirm before liking</b><br>Save <b>Reels</b> to Photos</td>
+      <td><b>Confirm before liking</b><br><b>Hide overlay</b> — one tap strips likes, comments, share & caption, leaving just the video<br>Save <b>Reels</b> to Photos</td>
     </tr>
     <tr>
       <td nowrap>📖 <b>Stories</b></td>
@@ -40,11 +40,11 @@
     </tr>
     <tr>
       <td nowrap>🧭 <b>Links</b></td>
-      <td>Open external links in your <b>default browser</b> instead of the in-app browser<br><b>Open in Facebook</b> Safari extension — reopens facebook.com links from Safari in the app</td>
+      <td>Open external links in your <b>default browser</b> instead of the in-app browser<br><b>Open in Facebook</b> Safari extension — reopens facebook.com links from Safari in the app, on the <b>exact Reel / post / photo / story</b></td>
     </tr>
     <tr>
       <td nowrap>🎨 <b>Appearance</b></td>
-      <td><b>OLED Dark Mode</b> (True black)<br>Custom App-Icon Picker</td>
+      <td><b>OLED Dark Mode</b> (true black — keeps post dividers, avatars & the status bar legible)<br>Custom App-Icon Picker</td>
     </tr>
     <tr>
       <td nowrap>🔔 <b>Updates</b></td>
@@ -53,32 +53,15 @@
   </tbody>
 </table>
 
-💡 **Settings:** Long-press any **tab bar item** (classic or the new iOS 26 liquid-glass bar) or the **native Facebook settings button**.
+💡 **Settings:** Long-press any **tab bar item** (classic or the new iOS 26 liquid-glass bar), the **"facebook" wordmark**, or the **native Facebook settings button**.
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ Roadmap & Credits
 
-Planned features and fixes for upcoming releases. Contributions and suggestions
-are welcome — open an issue or a pull request.
-
-**Feed & Content**
-- [ ] Hide the **Reels overlay** (comment/like/share controls layered over Reels)
-- [ ] Hide **Stories** row from the main feed
-- [ ] Hide **ads on Facebook Marketplace**
-
-**Downloads**
-- [ ] **Multiple-quality** download picker for Reels & videos (choose resolution before saving)
-
-**Appearance**
-- [ ] Enhance **OLED Mode** — restore the missing **post divider** (separators not shown between posts in OLED mode)
-- [ ] Fix the **unwanted box** rendered beside the app-icon image
-
-**Navigation**
-- [ ] Remove the **"Also from Meta"** section from the left sidebar
-
-> [!NOTE]
-> This list tracks intended work; items are unchecked until shipped in a release.
+Planned features and fixes, together with the project's provenance and credits,
+are documented in **[ROADMAP_AND_CREDITS.md](ROADMAP_AND_CREDITS.md)**.
+Contributions and suggestions are welcome — open an issue or a pull request.
 
 ---
 
@@ -169,13 +152,13 @@ This project requires [Theos](https://theos.dev) to build. Ensure you have it in
 <details>
 <summary><b>Code Editor Setup</b></summary>
 
-Theos does not emit a compilation database by default, causing editors to fail at finding the iOS SDK. You can generate one using [`bear`](https://github.com/rizsotto/Bear):
+Theos does not emit a compilation database by default, causing editors to fail at finding the iOS SDK. Generate one with [`bear`](https://github.com/rizsotto/Bear):
 
 ```bash
 make compile-commands
 ```
 
-This generates `compile_commands.json`. Re-run this after adding new source files. Note: Logos `.xm` files cannot be fully parsed by clang, so `.clangd` suppresses false diagnostics while ensuring they compile correctly.
+This writes a per-machine `.clangd` (with your theos path and SDK baked in) and a `compile_commands.json`. The database is produced with `bear parse-sh` from theos's own dry-run (`make -n`) rather than by intercepting the build, because macOS strips the interception mechanism (`DYLD_INSERT_LIBRARIES`) from the Xcode toolchain's Apple-signed clang, leaving a plain `bear -- make` empty. Re-run it after adding new source files. Note: Logos `.xm` files cannot be fully parsed by clang, so `.clangd` suppresses false diagnostics while ensuring they compile correctly.
 
 </details>
 
@@ -192,17 +175,15 @@ This generates `compile_commands.json`. Re-run this after adding new source file
 │   └── svg             # Source vector graphics
 ├── scripts             # Python utility scripts (e.g., icon merging, svg rendering)
 ├── src                 # Tweak source code
-│   ├── Core            # Constructor, preferences, resources, and diagnostics
+│   ├── Core            # Constructor, preferences, and resources
 │   ├── Features        # All the hooks for modifying the Facebook app:
 │   │   ├── AppChrome   # UI settings gesture (TabBar & Settings Button)
 │   │   ├── AppIcons    # Custom app-icon picker logic
-│   │   ├── Diagnostics # Diagnostics and logging controllers
 │   │   ├── Downloads   # Reel & Story media downloaders (save to Photos)
 │   │   ├── Feed        # Feed-related hooks (ads, suggestions, Reels)
 │   │   ├── Language    # UI language override hooks
 │   │   ├── LikeConfirmation # Confirm before liking logic
 │   │   ├── Links       # Open external links in the default browser (not the IAB)
-│   │   ├── Menu        # Diagnostics for blocking server-driven menu sections
 │   │   ├── OLED        # True dark mode implementation
 │   │   ├── Onboarding  # Welcome screen controller
 │   │   ├── Stories     # Story-related hooks (Ghost mode, auto-advance block)
@@ -219,11 +200,8 @@ This generates `compile_commands.json`. Re-run this after adding new source file
 
 ## 📜 Provenance & Credits
 
-- **Idea & Inspiration:** The core concept of this tweak was inspired by the closed-source Facebook tweak **[Glow](https://github.com/dayanch96/Glow)**. This project is a clean reimplementation based on its behavioral analysis.
-- **Story & Reels Downloader:** The media download feature (`src/Features/Downloads/`) was contributed by **[ttlongdl](https://github.com/ttlongdl/Facebook-Plus)** via their GPLv3 fork, and is integrated here with attribution as required by the license.
-- **"Open in Facebook" Safari Extension:** The bundled Safari web extension (`OpenInFacebookSafariExtension/`, built from source into the IPA) is our own, independently written implementation — its own `NSExtension` host, manifest and link-routing scripts, with no third-party binary or source bundled. See `OpenInFacebookSafariExtension/README.md` for details.
-- **Compatibility Layer:** The sideloading compatibility layer (`src/PluginsInject/`) is copied and derived directly from **[zxPluginsInject](https://github.com/asdfzxcvbn/zxPluginsInject)**.
-- **Symbol Rebinding:** Uses **[fishhook](https://github.com/facebook/fishhook)** for dynamic symbol rebinding.
+Third-party code, inspirations, and attributions are documented in
+**[ROADMAP_AND_CREDITS.md](ROADMAP_AND_CREDITS.md)**.
 
 ## ⚖️ License
 

@@ -34,7 +34,6 @@
 
 #import "FBPlus.h"
 #import "FBPPrefs.h"
-#import "FBPDiagnostics.h"
 #import "FBPHeaders.h"
 
 #import <QuartzCore/QuartzCore.h>
@@ -79,10 +78,21 @@ static UIColor *FBPResolve(UIColor *color) {
     return color;
 }
 
-/// YES for an opaque-ish background that should be deepened to black. A grey
-/// surface (Facebook's base *and* its lighter elevated cards) counts up to a
-/// mid-grey; a coloured surface only counts when genuinely dark, so accent
-/// controls like the blue buttons keep their colour.
+/// YES only for one of Facebook's own dark *background* greys — the surfaces that
+/// should go true-black. Facebook's dark palette (FDSColor / FBColorPaletteConfig
+/// -greyColorWithShade:) paints every surface from a small ladder of near-neutral
+/// greys that tops out around #3A3B3C (base #18191A, card #242526, elevated
+/// #3A3B3C). We match exactly that band — near-neutral and no lighter than
+/// ~#3A3B3C — instead of a loose "is it darkish" luma test.
+///
+/// This is deliberately tight: the old test blackened anything up to a mid-grey
+/// (luma < 0.48), which also caught dividers, pressed/hover states, elevated
+/// chips and placeholders and painted them as solid black rectangles — the
+/// "square box" artefacts. Lighter greys, tinted surfaces, accents and photos are
+/// now left untouched, so only real backgrounds deepen to black.
+static const CGFloat kFBPBgMaxLuma    = 0.26;   // just above #3A3B3C (luma ~0.231)
+static const CGFloat kFBPBgMaxChroma  = 0.05;   // near-neutral only (FB greys are ~neutral)
+
 static BOOL FBPColorIsDark(UIColor *color) {
     if (!color) return NO;
     CGFloat r = 0, g = 0, b = 0, a = 0;
@@ -90,12 +100,12 @@ static BOOL FBPColorIsDark(UIColor *color) {
         if (a < 0.2) return NO;
         CGFloat mx = MAX(r, MAX(g, b)), mn = MIN(r, MIN(g, b));
         CGFloat luma = 0.299 * r + 0.587 * g + 0.114 * b;
-        return (mx - mn) < 0.12 ? (luma < 0.48) : (luma < 0.20);
+        return (mx - mn) < kFBPBgMaxChroma && luma < kFBPBgMaxLuma;
     }
     CGFloat w = 0, wa = 0;
     if ([color getWhite:&w alpha:&wa]) {
         if (wa < 0.2) return NO;
-        return w < 0.48;
+        return w < kFBPBgMaxLuma;
     }
     return NO;
 }
@@ -126,6 +136,121 @@ static UIColor *FBPBlackKeepingAlpha(UIColor *color) {
 static CGColorRef FBPBlackCGKeepingAlpha(CGColorRef cg) {
     CGFloat alpha = cg ? CGColorGetAlpha(cg) : 1.0;
     return [UIColor colorWithWhite:0.0 alpha:alpha].CGColor;
+}
+
+#pragma mark - Dividers
+
+// Pure black merges Facebook's cards into their background, so the hairline
+// separators between posts, list rows and sections vanish. Facebook draws them
+// with FBLineComponentInternalView (and plain ~1–2pt hairline views); in OLED
+// mode we paint those a faint white instead of black, so the structure the
+// native dark theme has stays readable — a true-black look that still has lines.
+static const CGFloat kFBPDividerAlpha = 0.22;   // faint white on black
+
+static UIColor *FBPDividerColor(void) {
+    static UIColor *color = nil;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ color = [UIColor colorWithWhite:1.0 alpha:kFBPDividerAlpha]; });
+    return color;
+}
+
+/// YES for a separator line we should lighten rather than blacken: Facebook's
+/// FBLineComponentInternalView, or a thin (≤2pt) neutral/near-black hairline. A
+/// *coloured* thin bar — a selected-tab underline, a progress bar — is not a
+/// divider (its colour isn't dark), so it is left alone.
+static BOOL FBPViewLooksLikeDivider(UIView *view) {
+    if ([NSStringFromClass(view.class) containsString:@"LineComponent"]) return YES;
+    CGSize size = view.bounds.size;
+    BOOL thin = (size.height > 0 && size.height <= 2.0 && size.width  >= 40) ||
+                (size.width  > 0 && size.width  <= 2.0 && size.height >= 40);
+    if (!thin) return NO;
+    UIColor *bg = view.backgroundColor;
+    if (bg) return FBPColorIsDark(FBPResolve(bg));
+    if (view.layer.backgroundColor) return FBPCGColorIsDark(view.layer.backgroundColor);
+    return view.layer.sublayers.count > 0;   // line drawn on a sublayer
+}
+
+/// Paints a divider faint-white across the ways Facebook draws its line — the
+/// view's background, its own layer, and any line-drawing sublayer.
+static void FBPLightenDivider(UIView *view) {
+    UIColor *light = FBPDividerColor();
+    view.backgroundColor = light;
+    view.layer.backgroundColor = light.CGColor;
+    for (CALayer *sub in [view.layer.sublayers copy]) {
+        if ([sub.delegate isKindOfClass:UIView.class]) continue;
+        if ([sub isKindOfClass:CAShapeLayer.class]) {
+            ((CAShapeLayer *)sub).fillColor = light.CGColor;
+        }
+        sub.backgroundColor = light.CGColor;
+    }
+}
+
+#pragma mark - Profile avatars
+
+// A profile avatar stacks an unmasked square image — a low-res placeholder /
+// backing — behind the circular photo. On Facebook's grey cards its grey corners
+// blend in, but on the OLED-black background they poke past the circle as a
+// visible grey "box".
+//
+// Facebook builds avatars several different ways, but the box always comes from
+// a square image that isn't being clipped to the avatar circle. Two shapes cover
+// every case seen (feed headers, comments, video/AI posts):
+//
+//   A. A circular container (cornerRadius ~= half its square size) whose
+//      masksToBounds is OFF, so the square image/placeholder inside bleeds out to
+//      the corners. Turning masksToBounds on clips everything inside to the
+//      circle. The online-status dot lives OUTSIDE this container, so it stays.
+//   B. A container holding a *masked* MRCImageComponentView (the circular photo)
+//      next to a bare, unmasked square UIImageView (a placeholder behind it).
+//      Rounding that bare image to a circle removes its corners.
+//
+// Scoped to small, square-ish containers so rectangular post photos (which also
+// use MRCImageComponentView) and larger media are never touched.
+static void FBPFixAvatarBox(UIView *container) {
+    CGSize size = container.bounds.size;
+    if (size.width < 16.0 || size.width > 72.0) return;        // avatar-sized only
+    CGFloat boxDiff = size.width > size.height ? size.width - size.height
+                                               : size.height - size.width;
+    if (boxDiff > 6.0) return;                                  // square-ish only
+
+    UIView *maskedAvatar = nil;
+    UIImageView *bareImages[8];
+    NSUInteger bareCount = 0;
+    BOOL hasImageContent = NO;
+
+    for (UIView *sub in container.subviews) {
+        if ([NSStringFromClass([sub class]) containsString:@"MRCImageComponent"]) {
+            hasImageContent = YES;
+            if (sub.layer.masksToBounds) maskedAvatar = sub;
+            continue;
+        }
+        if (![sub isKindOfClass:UIImageView.class]) continue;
+        hasImageContent = YES;
+        if (sub.layer.cornerRadius > 0.5 || sub.layer.masksToBounds) continue;
+        CGFloat w = sub.bounds.size.width, h = sub.bounds.size.height;
+        CGFloat d = w > h ? w - h : h - w;
+        if (w < 16.0 || d > 6.0) continue;                      // square-ish image
+        if (bareCount < 8) bareImages[bareCount++] = (UIImageView *)sub;
+    }
+
+    // Case A: a circular container holding image content but not clipping it.
+    CGFloat cr = container.layer.cornerRadius;
+    CGFloat crDiff = cr > size.width / 2.0 ? cr - size.width / 2.0
+                                           : size.width / 2.0 - cr;
+    if (hasImageContent && crDiff < 3.0 && !container.layer.masksToBounds) {
+        container.layer.masksToBounds = YES;
+        container.clipsToBounds = YES;
+    }
+
+    // Case B: a masked avatar next to bare square placeholder image(s).
+    if (maskedAvatar) {
+        for (NSUInteger i = 0; i < bareCount; i++) {
+            UIImageView *img = bareImages[i];
+            img.layer.cornerRadius = img.bounds.size.width / 2.0;
+            img.layer.masksToBounds = YES;
+            img.clipsToBounds = YES;
+        }
+    }
 }
 
 /// Blackens the dark colours a view paints *directly onto its own layer's
@@ -254,6 +379,11 @@ static void FBPApplyForcedAppearance(void) {
                 if (window.overrideUserInterfaceStyle != want) {
                     window.overrideUserInterfaceStyle = want;
                 }
+
+                // Re-query the status bar style so toggling OLED flips the
+                // time / battery / signal glyphs to light (or back) immediately.
+                UIViewController *root = window.rootViewController;
+                if (root) [root setNeedsStatusBarAppearanceUpdate];
             }
         }
     }
@@ -279,9 +409,16 @@ static void FBPApplyForcedAppearance(void) {
 %hook UIView
 
 - (void)setBackgroundColor:(UIColor *)color {
-    if (gOLEDEnabled && !FBPOLEDSkip(self) && FBPColorIsDark(FBPResolve(color))) {
-        %orig(FBPBlackKeepingAlpha(color));
-        return;
+    if (gOLEDEnabled && !FBPOLEDSkip(self)) {
+        // A separator line keeps a faint white instead of vanishing into black.
+        if ([NSStringFromClass(self.class) containsString:@"LineComponent"]) {
+            %orig(FBPDividerColor());
+            return;
+        }
+        if (FBPColorIsDark(FBPResolve(color))) {
+            %orig(FBPBlackKeepingAlpha(color));
+            return;
+        }
     }
     %orig(color);
 }
@@ -289,6 +426,22 @@ static void FBPApplyForcedAppearance(void) {
 - (void)layoutSubviews {
     %orig;
     if (!gOLEDEnabled || FBPOLEDSkip(self)) return;
+
+    // Dividers are lightened, not blackened, so posts/rows stay visually separated.
+    if (FBPViewLooksLikeDivider(self)) {
+        FBPLightenDivider(self);
+        return;
+    }
+
+    // Round the square placeholder stacked behind a circular profile avatar, so
+    // its grey corners don't show as a box against the OLED-black background.
+    // Trigger both when the avatar container lays out and, more reliably, when
+    // the masked image component itself mounts (then fix its siblings).
+    FBPFixAvatarBox(self);
+    if ([NSStringFromClass(self.class) containsString:@"MRCImageComponent"] &&
+        self.layer.masksToBounds) {
+        FBPFixAvatarBox(self.superview);
+    }
 
     UIColor *bg = self.backgroundColor;
     if (bg) {
@@ -356,6 +509,17 @@ static void FBPApplyForcedAppearance(void) {
 }
 %end
 
+// The navigation-bar view controller drives the status bar, and it returns
+// darkContent (black time / battery / signal) because Facebook's header is
+// normally light. OLED paints that header black, so black status-bar glyphs
+// vanish. Force light content (white glyphs) while OLED is on.
+%hook FBMovableNavigationBarViewController
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    if (gOLEDEnabled) return UIStatusBarStyleLightContent;
+    return %orig;
+}
+%end
+
 %end // FBPOLEDGlobal
 
 void FBPInitOLEDHooks(void) {
@@ -382,5 +546,4 @@ void FBPInitOLEDHooks(void) {
                    dispatch_get_main_queue(), ^{ FBPApplyForcedAppearance(); });
 
     FBP_ONCE(gOLED) { %init(FBPOLEDGlobal); }
-    [FBPDiagnostics.shared recordGroup:@"FBPOLED" installed:YES detail:nil];
 }
