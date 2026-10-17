@@ -7,6 +7,8 @@
 "row.norecs.desc" = "Ukrywa posty sugerowane algorytmicznie.";
 "row.nopymk.title" = "Usuń osoby, które możesz znać";
 "row.noreels.title" = "Usuń karuzelę rolek";
+"row.nostories.title" = "Usuń relacje";
+"row.nostories.desc" = "Ukrywa pasek relacji oraz pojedyncze karty relacji w aktualnościach.";
 "row.nothreads.title" = "Usuń promocję Threads";
 "row.nothreads.desc" = "Ukrywa kartę „Odkrywaj nowe wątki”.";
 "row.nogroups.title" = "Usuń sugestie grup";
@@ -22,6 +24,8 @@
 "row.downloadstories.desc" = "Wyświetla przycisk pobierania podczas oglądania relacji.";
 
 "row.reelslike.title" = "Potwierdzaj polubienia rolek";
+"row.hideoverlay.title" = "Przycisk ukrywania nakładki";
+"row.hideoverlay.desc" = "Dodaje do rolek przycisk z ikoną oka, który ukrywa wszystkie elementy interfejsu — polubienia, komentarze, udostępnianie i opis — pozostawiając tylko film.";
 "row.anonstories.title" = "Oglądaj relacje anonimowo";
 "row.anonstories.desc" = "Pozwala oglądać relacje bez wysyłania potwierdzenia odczytu.";
 "row.noautonext.title" = "Wyłącz automatyczne przechodzenie dalej";
@@ -33,8 +37,6 @@
 "row.appicon.desc" = "Wybierz alternatywną ikonę aplikacji.";
 "row.autoclear.title" = "Czyść pamięć podręczną przy uruchomieniu";
 "row.clearcache.title" = "Wyczyść pamięć podręczną";
-"row.diagnostics.title" = "Diagnostyka";
-"row.diagnostics.desc" = "Sprawdź, które funkcje są aktywne.";
 "row.checkupdate.title" = "Sprawdź dostępność aktualizacji";
 "row.checkupdate.desc" = "Sprawdź, czy jest dostępna nowsza wersja.";
 "row.welcome.title" = "Pokaż ekran powitalny";
@@ -71,6 +73,7 @@
 "download.reel.httpError" = "Sieć CDN Facebooka zwróciła kod HTTP %ld.";
 "download.reel.tmpFailed" = "Nie udało się utworzyć tymczasowego pliku wideo.";
 "download.reel.noLink" = "Nie udało się uzyskać łącza do tego filmu.";
+"reels.hideOverlay.a11y" = "Ukryj nakładkę rolki";
 
 /* Ekran aktualizacji */
 "update.title" = "Dostępna aktualizacja";
