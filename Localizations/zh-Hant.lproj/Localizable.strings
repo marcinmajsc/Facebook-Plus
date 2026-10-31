@@ -22,8 +22,6 @@
 "row.noautonext.title" = "關閉自動播放下一則";
 "row.nostorypymk.title" = "隱藏限時動態推薦";
 "row.nostorypymk.desc" = "從限時動態列移除「你可能認識的人」。";
-"row.oled.title" = "OLED 深色模式";
-"row.oled.desc" = "將整個應用程式變為純黑。";
 "row.appicon.title" = "App 圖示";
 "row.appicon.desc" = "選擇其他 App 圖示。";
 "row.autoclear.title" = "啟動時清除快取";

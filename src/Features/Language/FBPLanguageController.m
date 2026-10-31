@@ -1,7 +1,6 @@
 // Lists every bundled UI language by its own name (endonym) with the English
 // name beneath, and applies the chosen one to FBPKeyLanguage. Styled to match the
-// main settings screen: a fixed dark panel with a dark-grey card, and an
-// FBP-prefixed cell so the OLED sweep leaves its colours alone.
+// main settings screen: a fixed dark panel with dark-grey cards.
 
 #import "FBPLanguageController.h"
 #import "FBPResources.h"
@@ -15,7 +14,7 @@ static NSString *const kCell = @"fbp.language.row";
 
 #pragma mark - Cell
 
-/// FBP-prefixed so the OLED sweep leaves its card colour alone.
+/// Styled to match the main settings rows.
 @interface FBPLanguageCell : UITableViewCell
 @end
 @implementation FBPLanguageCell

@@ -4,7 +4,7 @@
 // or chevron), vertically centred against the icon.
 //
 // The whole panel uses a fixed dark palette — pure-black background, dark-grey
-// cards — pinned regardless of the host app's OLED / dark / light setting, so the
+// cards — pinned regardless of the host app's dark / light setting, so the
 // screen always reads the same way. See FBPPanelColor / FBPCardColor below.
 
 #import "FBPSettingsController.h"
@@ -50,16 +50,6 @@ static const CGFloat kIconGlyph    = 22.0;   // monochrome glyph size within the
 
 // The fixed dark palette (FBPPanelColor / FBPCardColor / FBPIconColor) lives in
 // FBPResources so every tweak screen shares one source of truth.
-
-#pragma mark - Card view
-
-/// An FBP-prefixed plain view. The class prefix is load-bearing: the OLED sweep
-/// blackens any dark -backgroundColor it sees except on FBP* views, so the branded
-/// header card must be an FBP* view or it turns invisible in OLED mode.
-@interface FBPCardView : UIView
-@end
-@implementation FBPCardView
-@end
 
 #pragma mark - Cell
 
@@ -206,7 +196,7 @@ static const CGFloat kIconGlyph    = 22.0;   // monochrome glyph size within the
     // Pin the panel to a fixed dark appearance. Forcing the dark interface style
     // makes every dynamic system colour still in use (labels, separators,
     // destructive red) resolve to its dark variant permanently, so the host app's
-    // OLED / dark / light state can never shift the look.
+    // dark / light state can never shift the look.
     self.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
     self.view.backgroundColor = FBPPanelColor();
     self.view.tintColor = FBPTintColor();
@@ -238,7 +228,7 @@ static const CGFloat kIconGlyph    = 22.0;   // monochrome glyph size within the
     UIView *container = [[UIView alloc]
         initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 98)];
 
-    FBPCardView *card = [[FBPCardView alloc] init];
+    UIView *card = [[UIView alloc] init];
     card.backgroundColor = FBPCardColor();
     card.layer.cornerRadius = 18;
     card.layer.cornerCurve = kCACornerCurveContinuous;
@@ -370,9 +360,6 @@ compatibleWithTraitCollection:nil]
                        icon:@"people" color:UIColor.systemBlueColor],
         ]},
         @{ @"header" : @"Appearance", @"rows" : @[
-            [self switchRow:FBPKeyOLED title:FBPL(@"row.oled.title")
-                       desc:FBPL(@"row.oled.desc")
-                       icon:@"moon.fill" color:UIColor.systemIndigoColor],
             @{ kRowKey : kActionAppIcon, kRowType : kTypeAction, kRowNav : @YES,
                kRowTitle : FBPL(@"row.appicon.title"), kRowDesc : FBPL(@"row.appicon.desc"),
                kRowIcon : @"app.badge.fill", kRowColor : UIColor.systemBlueColor },

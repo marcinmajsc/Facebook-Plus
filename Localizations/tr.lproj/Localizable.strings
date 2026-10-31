@@ -22,8 +22,6 @@
 "row.noautonext.title" = "Otomatik İlerlemeyi Kapat";
 "row.nostorypymk.title" = "Hikâye Önerilerini Gizle";
 "row.nostorypymk.desc" = "Hikâye şeridinden «tanıyor olabileceğin kişiler»i kaldırır.";
-"row.oled.title" = "OLED Karanlık Mod";
-"row.oled.desc" = "Tüm uygulamayı gerçek siyaha çevirir.";
 "row.appicon.title" = "Uygulama Simgesi";
 "row.appicon.desc" = "Alternatif bir uygulama simgesi seç.";
 "row.autoclear.title" = "Açılışta Önbelleği Temizle";

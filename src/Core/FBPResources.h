@@ -33,10 +33,9 @@ extern "C" {
 extern UIColor *FBPTintColor(void);
 
 /// Fixed dark palette for the tweak's own screens — pinned regardless of the
-/// host app's OLED / dark / light setting. A pure-black panel, dark-grey cards,
+/// host app's dark / light setting. A pure-black panel, dark-grey cards,
 /// and white glyphs. Every tweak screen paints from these so the look never
-/// shifts with Facebook's theme. (Views that use these must be FBP-prefixed so
-/// the OLED sweep leaves their colours alone.)
+/// shifts with Facebook's theme.
 extern UIColor *FBPPanelColor(void);
 extern UIColor *FBPCardColor(void);
 extern UIColor *FBPIconColor(void);

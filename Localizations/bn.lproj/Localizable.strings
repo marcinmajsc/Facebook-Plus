@@ -22,8 +22,6 @@
 "row.noautonext.title" = "অটো-এগিয়ে যাওয়া বন্ধ করুন";
 "row.nostorypymk.title" = "স্টোরি সাজেশন লুকান";
 "row.nostorypymk.desc" = "স্টোরি ট্রে থেকে «আপনি চিনতে পারেন» সরায়।";
-"row.oled.title" = "OLED ডার্ক মোড";
-"row.oled.desc" = "পুরো অ্যাপকে খাঁটি কালো করে।";
 "row.appicon.title" = "অ্যাপ আইকন";
 "row.appicon.desc" = "বিকল্প একটি অ্যাপ আইকন বেছে নিন।";
 "row.autoclear.title" = "চালু হলে ক্যাশ পরিষ্কার করুন";

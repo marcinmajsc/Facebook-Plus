@@ -22,8 +22,6 @@
 "row.noautonext.title" = "Disattiva avanzamento automatico";
 "row.nostorypymk.title" = "Nascondi i suggerimenti nelle storie";
 "row.nostorypymk.desc" = "Rimuove «persone che potresti conoscere» dalla barra delle storie.";
-"row.oled.title" = "Modalità scura OLED";
-"row.oled.desc" = "Rende tutta l’app completamente nera.";
 "row.appicon.title" = "Icona dell’app";
 "row.appicon.desc" = "Scegli un’icona alternativa per l’app.";
 "row.autoclear.title" = "Svuota la cache all’avvio";

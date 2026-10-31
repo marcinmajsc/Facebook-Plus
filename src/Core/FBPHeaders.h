@@ -84,28 +84,4 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FBWebViewController : UIViewController
 @end
 
-#pragma mark - OLED targets
-//
-// The chrome and feed container views whose background fills the screen. Forcing
-// these to pure black in dark mode is what turns the app AMOLED-black. Each is
-// hooked only when present, so a build that renames one loses only that surface.
-
-@interface FBTabBar : UIView
-@end
-
-@interface FBTabBarAndContentView : UIView
-@end
-
-@interface FBTopBarAndContentView : UIView
-@end
-
-@interface FBMovableNavigationBarView : UIView
-@end
-
-@interface FBNewsFeedView : UIView
-@end
-
-@interface FBNewsFeedCollectionView : UICollectionView
-@end
-
 NS_ASSUME_NONNULL_END

@@ -31,8 +31,6 @@
 "row.noautonext.title" = "Wyłącz automatyczne przechodzenie dalej";
 "row.nostorypymk.title" = "Ukryj sugestie relacji";
 "row.nostorypymk.desc" = "Usuwa osoby, które możesz znać, z paska relacji.";
-"row.oled.title" = "Tryb ciemny OLED";
-"row.oled.desc" = "Ustawia prawdziwą czerń w całej aplikacji.";
 "row.appicon.title" = "Ikona aplikacji";
 "row.appicon.desc" = "Wybierz alternatywną ikonę aplikacji.";
 "row.autoclear.title" = "Czyść pamięć podręczną przy uruchomieniu";

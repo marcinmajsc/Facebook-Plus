@@ -36,7 +36,6 @@ Closes #
 - [ ] Builds cleanly with `make package FINALPACKAGE=1`.
 - [ ] Tested on a real device with the affected feature toggled on **and** off.
 - [ ] Any new hook checks its target class/selector exists before installing, so a future Facebook update degrades only that feature.
-- [ ] The tweak's own views stay `FBP`-prefixed (so the OLED sweep leaves their colours alone).
 - [ ] User-facing strings are localized via `FBPL(...)` and added to `Localizations/Base.lproj` (and others where possible).
 - [ ] Comments are professional and explain *why*, not *what*; no leftover debug logging in the release path.
 - [ ] I have not committed build artifacts, the decrypted IPA, or other gitignored files.

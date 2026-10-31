@@ -48,7 +48,7 @@ static const CGFloat kButtonHeight  = 54.0;
 
     // A self-contained dark look, independent of the app's current appearance.
     // The colours below are pinned (static white / white-alpha, not the dynamic
-    // UIColor.whiteColor) so toggling the host app's light/dark/OLED setting
+    // UIColor.whiteColor) so toggling the host app's light/dark setting
     // never repaints this screen; the override style only fixes the UISwitch.
     self.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
     self.view.backgroundColor = UIColor.blackColor;
@@ -394,7 +394,7 @@ static const CGFloat kButtonHeight  = 54.0;
           @"desc"  : @"Every switch lives in a single sheet, and each one stays off until you flip it yourself."},
         @{@"image" : @"magic",
           @"title" : @"A calmer app",
-          @"desc"  : @"Trim ads and suggestions, switch on a true-black night look, and repaint the icon — small touches, out of your way."},
+          @"desc"  : @"Trim ads and suggestions, and repaint the icon — small touches, out of your way."},
     ];
 }
 

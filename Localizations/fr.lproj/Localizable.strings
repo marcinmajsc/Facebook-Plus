@@ -22,8 +22,6 @@
 "row.noautonext.title" = "Désactiver l’avance automatique";
 "row.nostorypymk.title" = "Masquer les suggestions de stories";
 "row.nostorypymk.desc" = "Retire « connaissez-vous ? » du bandeau des stories.";
-"row.oled.title" = "Mode sombre OLED";
-"row.oled.desc" = "Rend toute l’app vraiment noire.";
 "row.appicon.title" = "Icône de l’app";
 "row.appicon.desc" = "Choisir une autre icône d’app.";
 "row.autoclear.title" = "Vider le cache au lancement";

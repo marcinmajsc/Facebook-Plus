@@ -22,8 +22,6 @@
 "row.noautonext.title" = "Automatisches Weiterblättern deaktivieren";
 "row.nostorypymk.title" = "Story-Vorschläge ausblenden";
 "row.nostorypymk.desc" = "Entfernt „Personen, die du kennst“ aus der Story-Leiste.";
-"row.oled.title" = "OLED-Dunkelmodus";
-"row.oled.desc" = "Macht die gesamte App komplett schwarz.";
 "row.appicon.title" = "App-Symbol";
 "row.appicon.desc" = "Ein alternatives App-Symbol wählen.";
 "row.autoclear.title" = "Cache beim Start leeren";

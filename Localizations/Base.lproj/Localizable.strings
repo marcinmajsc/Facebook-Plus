@@ -26,8 +26,6 @@
 "row.noautonext.title" = "Disable Auto-Advance";
 "row.nostorypymk.title" = "Hide Story Suggestions";
 "row.nostorypymk.desc" = "Removes “people you may know” from the story tray.";
-"row.oled.title" = "OLED Dark Mode";
-"row.oled.desc" = "Turns the whole app true black.";
 "row.appicon.title" = "App Icon";
 "row.appicon.desc" = "Choose an alternate app icon.";
 "row.autoclear.title" = "Clear Cache on Launch";

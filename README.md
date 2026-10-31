@@ -44,7 +44,7 @@
     </tr>
     <tr>
       <td nowrap>🎨 <b>Appearance</b></td>
-      <td><b>OLED Dark Mode</b> (true black — keeps post dividers, avatars & the status bar legible)<br>Custom App-Icon Picker</td>
+      <td>Custom App-Icon Picker</td>
     </tr>
     <tr>
       <td nowrap>🔔 <b>Updates</b></td>
@@ -184,7 +184,6 @@ This writes a per-machine `.clangd` (with your theos path and SDK baked in) and 
 │   │   ├── Language    # UI language override hooks
 │   │   ├── LikeConfirmation # Confirm before liking logic
 │   │   ├── Links       # Open external links in the default browser (not the IAB)
-│   │   ├── OLED        # True dark mode implementation
 │   │   ├── Onboarding  # Welcome screen controller
 │   │   ├── Stories     # Story-related hooks (Ghost mode, auto-advance block)
 │   │   └── Update      # In-app update checker + update screen (GitHub Releases)

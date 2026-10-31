@@ -22,8 +22,6 @@
 "row.noautonext.title" = "Отключить автопереход";
 "row.nostorypymk.title" = "Скрыть предложения в историях";
 "row.nostorypymk.desc" = "Убирает «возможные друзья» из ленты историй.";
-"row.oled.title" = "Тёмный режим OLED";
-"row.oled.desc" = "Делает всё приложение полностью чёрным.";
 "row.appicon.title" = "Значок приложения";
 "row.appicon.desc" = "Выбрать другой значок приложения.";
 "row.autoclear.title" = "Очищать кэш при запуске";

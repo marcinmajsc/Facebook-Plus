@@ -57,9 +57,7 @@ static NSString *const kCell = @"fbp.appicon.row";
 
 #pragma mark - Cell
 
-/// FBP-prefixed so the OLED sweep leaves its card colour alone (a plain
-/// UITableViewCell would be blackened to invisibility in OLED mode). Painted and
-/// typed to match the main settings rows.
+/// Painted and typed to match the main settings rows.
 @interface FBPAppIconCell : UITableViewCell
 @end
 @implementation FBPAppIconCell
@@ -144,7 +142,7 @@ static NSString *const kCell = @"fbp.appicon.row";
     self.selectedName = [UIApplication.sharedApplication alternateIconName];
 
     // Match the main settings screen: a fixed dark panel that never shifts with
-    // the host app's OLED / dark / light state.
+    // the host app's dark / light state.
     self.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
     self.view.tintColor = FBPTintColor();
     self.tableView.backgroundColor = FBPPanelColor();

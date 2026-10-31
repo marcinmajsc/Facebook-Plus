@@ -22,8 +22,6 @@
 "row.noautonext.title" = "Desativar avanço automático";
 "row.nostorypymk.title" = "Ocultar sugestões de stories";
 "row.nostorypymk.desc" = "Remove «pessoas que você talvez conheça» da barra de stories.";
-"row.oled.title" = "Modo escuro OLED";
-"row.oled.desc" = "Deixa o app todo preto de verdade.";
 "row.appicon.title" = "Ícone do app";
 "row.appicon.desc" = "Escolher um ícone de app alternativo.";
 "row.autoclear.title" = "Limpar cache ao abrir";
