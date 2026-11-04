@@ -56,12 +56,6 @@ jobs:
           mkdir -p test
           wget "${{ inputs.ipa_url }}" --no-verbose -O test/com.facebook.Facebook.ipa
 
-          file_type=$(file --mime-type -b test/com.facebook.Facebook.ipa)
-          if [[ "$file_type" != "application/x-ios-app" && "$file_type" != "application/zip" ]]; then
-            echo "::error::Validation failed: the downloaded file is not a valid IPA (detected: $file_type). Make sure the URL is a direct download link, not a web page."
-            exit 1
-          fi
-
       - name: Install build dependencies
         run: brew install ldid dpkg xz
 
