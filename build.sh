@@ -173,6 +173,45 @@ if [ -f "$IPA_IN" ]; then
 		"${RENAME_ARGS[@]+"${RENAME_ARGS[@]}"}" \
 		-uwsgq
 
+
+	# Verify that repacking did not remove Facebook's notification service.
+	python3 - "$IPA_IN" "$IPA_OUT" <<'PY'
+import plistlib
+import sys
+import zipfile
+
+
+def notification_services(path):
+    result = set()
+    with zipfile.ZipFile(path) as archive:
+        for name in archive.namelist():
+            if not name.endswith(".appex/Info.plist"):
+                continue
+            info = plistlib.loads(archive.read(name))
+            extension = info.get("NSExtension", {})
+            if extension.get("NSExtensionPointIdentifier") == (
+                "com.apple.usernotifications.service"
+            ):
+                result.add(info.get("CFBundleIdentifier", name))
+    return result
+
+
+before = notification_services(sys.argv[1])
+after = notification_services(sys.argv[2])
+
+if not before:
+    print("warning: input IPA has no notification service extension.",
+          file=sys.stderr)
+elif not after:
+    sys.exit(
+        "error: notification service extension was removed during repacking. "
+        "Check cyan logs for encrypted plugins and use an IPA with "
+        "a decrypted notification service extension."
+    )
+else:
+    print("Notification service extension present: " + ", ".join(sorted(after)))
+PY
+
 	echo "==> Done. Injected IPA: $IPA_OUT"
 else
 	echo "==> $IPA_IN not found — built the .deb package(s) only (skipped injection)."
